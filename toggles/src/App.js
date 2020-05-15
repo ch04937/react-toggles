@@ -8,9 +8,51 @@ function App() {
 			<ToggleClass />
 			<ToggleFunction />
 			<Dropdown />
+			<ToggleRender
+				render={({ isOpen, toggle }) => (
+					<div>I'm render as {isOpen ? "open" : "close"}</div>
+				)}
+			/>
+			<CheckBox />
 		</div>
 	);
 }
+
+const ToggleRender = ({ render }) => {
+	const [isOpen, setIsOpen] = useState(true);
+	const toggle = () => {
+		setIsOpen((isOpen) => !isOpen);
+	};
+	return (
+		<div style={{ color: "red" }} onClick={toggle}>
+			{render({ isOpen, toggle })}
+		</div>
+	);
+};
+
+// function component that toggles
+const ToggleFunction = () => {
+	const [isOpen, setIsOpen] = useState(true);
+	const toggle = () => {
+		setIsOpen((isOpen) => !isOpen);
+	};
+	return <button onClick={toggle}> {isOpen ? "open" : "close"}</button>;
+};
+export default App;
+
+// creating a custom hook
+const useToggle = () => {
+	const [isOpen, setIsOpen] = useState(true);
+	const toggle = () => {
+		setIsOpen((isOpen) => !isOpen);
+	};
+	return [isOpen, toggle];
+};
+// check box component
+const CheckBox = () => {
+	const [isOpen, toggle] = useToggle();
+	return <input type="checkbox" checked={isOpen} onClick={toggle} readOnly />;
+};
 
 // Higher Order Component
 const withToggle = (Component) => {
@@ -26,7 +68,7 @@ const withToggle = (Component) => {
 const DropdownViewLayer = ({ isOpen, toggle }) => {
 	return (
 		<>
-			<div onClick={toggle}>Dropdown</div> {isOpen && <div>Dropdown</div>}{" "}
+			<div onClick={toggle}>Dropdown</div> {isOpen && <div>Dropdown</div>}
 		</>
 	);
 };
@@ -48,13 +90,3 @@ class ToggleClass extends React.Component {
 		);
 	}
 }
-
-// function component that toggles
-const ToggleFunction = () => {
-	const [isOpen, setIsOpen] = useState(true);
-	const toggle = () => {
-		setIsOpen((isOpen) => !isOpen);
-	};
-	return <button onClick={toggle}> {isOpen ? "open" : "close"}</button>;
-};
-export default App;
