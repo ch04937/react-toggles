@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./App.css";
 
 function App() {
@@ -14,9 +14,33 @@ function App() {
 				)}
 			/>
 			<CheckBox />
+			<ToggleRender></ToggleRender>
 		</div>
 	);
 }
+
+const ToggleContext = React.createContext;
+const ToggleProvider = ({ children }) => {
+	const [isOpen, setIsOpen] = useState(true);
+	const toggle = () => {
+		setIsOpen((isOpen) => !isOpen);
+	};
+
+	return (
+		<ToggleContext.Provider value={{ isOpen, toggle }}>
+			{children}
+		</ToggleContext.Provider>
+	);
+};
+
+// custom hook usetoggle for context
+const useToggleContext = () => {
+	const value = useContext(ToggleContext);
+	if (value === null) {
+		throw new Error("useToggleContext must be used in ToggleProvider");
+	}
+	return value;
+};
 
 const ToggleRender = ({ render }) => {
 	const [isOpen, setIsOpen] = useState(true);
